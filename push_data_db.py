@@ -24,7 +24,7 @@ class NetworkDataExtractor:
         except Exception as e:
             raise CustomException(e, sys)
 
-    def csv_to_json(self, file_path):
+    def csv_to_records(self, file_path):
         try:
             data = pd.read_csv(file_path)
             return data.to_dict(orient="records")
@@ -40,6 +40,16 @@ class NetworkDataExtractor:
         except Exception as e:
             raise CustomException(e, sys)
 
+
+if __name__ == "__main__":
+    FILE_PATH = "data/phisingData.csv"
+    DATABASE = "NetworkSecurityProjectDatabase"
+    COLLECTION = "NetworkData"
+    obj = NetworkDataExtractor(DATABASE,COLLECTION)
+    records = obj.csv_to_records(file_path=FILE_PATH)
+    print(records)
+    no_of_rec = obj.insert_data_mongodb(records=records)
+    print(no_of_rec)
 
 
 
