@@ -4,5 +4,6 @@ numpy
 dnspython
 pymongo
 certifi
+scikit-learn
 
 #-e .
