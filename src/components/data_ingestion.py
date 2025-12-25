@@ -1,7 +1,6 @@
 import os
 import sys
 import pymongo
-from pandas.core.interchange import dataframe
 from pymongo import MongoClient
 from typing import List
 import pandas as pd
@@ -44,7 +43,7 @@ class DataIngestion:
             feature_store_file_path = self.data_ingestion_config.feature_store_file_path
             dir_path = os.path.dirname(feature_store_file_path)
             os.makedirs(dir_path, exist_ok=True)
-            dataframe.to_csv(feature_store_file_path, index=False,header=False)
+            dataframe.to_csv(feature_store_file_path, index=False,header=True)
             return dataframe
         except Exception as e:
             raise CustomException(e,sys)
@@ -56,8 +55,8 @@ class DataIngestion:
 
             dir_path = os.path.dirname(self.data_ingestion_config.training_file_path)
             os.makedirs(dir_path, exist_ok=True)
-            train_set.to_csv(self.data_ingestion_config.training_file_path, index=False,header=False)
-            test_set.to_csv(self.data_ingestion_config.testing_file_path, index=False,header=False)
+            train_set.to_csv(self.data_ingestion_config.training_file_path, index=False,header=True)
+            test_set.to_csv(self.data_ingestion_config.testing_file_path, index=False,header=True)
             logging.info("Exported Train and Test Split")
         except Exception as e:
             raise CustomException(e,sys)

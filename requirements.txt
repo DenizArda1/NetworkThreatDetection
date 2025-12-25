@@ -5,5 +5,8 @@ dnspython
 pymongo
 certifi
 scikit-learn
+scipy-stubs
+dill
+pyaml
 
 #-e .
