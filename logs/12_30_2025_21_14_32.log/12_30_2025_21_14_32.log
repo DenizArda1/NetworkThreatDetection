@@ -1,0 +1,16 @@
+2025-12-30 21:14:32,564 - root - INFO - Initiate the data ingestion
+2025-12-30 21:14:35,031 - root - INFO - Train Test Split Successful
+2025-12-30 21:14:35,054 - root - INFO - Exported Train and Test Split
+2025-12-30 21:14:35,054 - root - INFO - Initiate the data validation
+2025-12-30 21:14:35,055 - root - INFO - Reading the data from train and test paths
+2025-12-30 21:14:35,061 - root - INFO - Required number of columns: 31
+2025-12-30 21:14:35,061 - root - INFO - Dataframe has 31 number of columns
+2025-12-30 21:14:35,061 - root - INFO - Required number of columns: 31
+2025-12-30 21:14:35,061 - root - INFO - Dataframe has 31 number of columns
+2025-12-30 21:14:35,114 - root - INFO - Initiate the data transformation
+2025-12-30 21:14:35,114 - root - INFO - Entered Data Transformation (initiate_data_transformation)
+2025-12-30 21:14:35,114 - root - INFO - Starting Data Transformation (initiate_data_transformation)
+2025-12-30 21:14:35,121 - root - INFO - Entered (get_data_transformer_obj)
+2025-12-30 21:14:35,121 - root - INFO - KNN Imputer initialized (get_data_transformer_obj)
+2025-12-30 21:14:35,123 - root - INFO - saving obj
+2025-12-30 21:14:35,124 - root - INFO - obj saved

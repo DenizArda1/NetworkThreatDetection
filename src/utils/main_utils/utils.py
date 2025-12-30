@@ -25,3 +25,23 @@ def write_yaml_file(file_path:str, content:object,replace:bool=False)->None:
             yaml.dump(content, file)
     except Exception as e:
         raise CustomException(e,sys)
+
+def save_numpy_arr_data(file_path:str, arr:np.ndarray):
+    try:
+        dir_path = os.path.dirname(file_path)
+        os.makedirs(dir_path, exist_ok=True)
+        with open(file_path, 'wb') as file_object:
+            np.save(file_object, arr)
+    except Exception as e:
+        raise CustomException(e,sys)
+
+def save_pkl_obj(file_path:str, obj:object)->None:
+    try:
+        logging.info("saving obj")
+        dir_path = os.path.dirname(file_path)
+        os.makedirs(dir_path, exist_ok=True)
+        with open(file_path, 'wb') as file_object:
+            pickle.dump(obj, file_object)
+        logging.info("obj saved")
+    except Exception as e:
+        raise CustomException(e,sys)

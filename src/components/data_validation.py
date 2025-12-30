@@ -65,7 +65,6 @@ class DataValidation:
 
     def detect_dataset_drift(self,base_df,curr_df,threshold=0.05):
         try:
-            status = True
             report = {}
             for column in base_df.columns:
                 d1 = base_df[column]
@@ -75,7 +74,6 @@ class DataValidation:
                     is_drift = False
                 else:
                     is_drift = True
-                    status = False
                 report.update({column:{
                     "p_value": float(ks.pvalue),
                     "drift_status": is_drift

@@ -7,6 +7,6 @@ certifi
 scikit-learn
 scipy-stubs
 dill
-pyaml
+pyyaml
 
 #-e .
