@@ -4,7 +4,6 @@ import numpy as np
 import pandas as pd
 from sklearn.impute import KNNImputer
 from sklearn.pipeline import Pipeline
-from sklearn.compose import ColumnTransformer
 
 from src.constants.training_pipeline import TARGET_COLUMN,DATA_TRANSFORMATION_IMPUTER_PARAMS
 from src.entity.artifact_entity import DataValidationArtifact,DataTransformationArtifact
