@@ -14,6 +14,8 @@ from src.logging.logger import logging
 from src.pipeline.training_pipeline import TrainingPipeline
 from src.utils.main_utils.utils import load_obj
 from src.utils.ml_utils.model.estimator import NetworkModel
+from src.utils.main_utils.app_utils import train_model_task
+from celery.result import AsyncResult
 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, File, UploadFile, Request
@@ -52,11 +54,23 @@ def health():
 @app.get("/train")
 async def train():
     try:
-        training_pipeline = TrainingPipeline()
-        training_pipeline.run_training_pipeline()
-        return Response("Training Completed")
+        task = train_model_task.delay()
+        return {
+            "message": "Training task started successfully",
+            "task_id": task.id
+        }
     except CustomException as e:
         raise CustomException(e,sys)
+
+@app.get("/task/{task_id}")
+async def get_task_status(task_id: str):
+    task_result = AsyncResult(task_id, app=train_model_task.app)
+    result = {
+        "task_id": task_id,
+        "status": task_result.status,
+        "result": task_result.result
+    }
+    return result
 
 @app.post("/predict")
 async def predict(request: Request,file: UploadFile = File(...)):

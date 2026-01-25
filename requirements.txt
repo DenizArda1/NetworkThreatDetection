@@ -13,5 +13,9 @@ dagshub
 fastapi
 uvicorn
 python-multipart
+celery
+celery-types
+redis
+
 
 #-e .

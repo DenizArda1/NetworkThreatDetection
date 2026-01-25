@@ -26,7 +26,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden; /* Loading sırasında kaydırmayı engelle */
+            overflow: hidden;
         }
 
         .upload-card {
@@ -83,17 +83,17 @@
             transform: translateY(-2px);
         }
 
-        /* --- LOADING OVERLAY STYLES --- */
+
         .loading-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(15, 23, 42, 0.95); /* Koyu Arkaplan */
-            backdrop-filter: blur(8px); /* Bulanıklık Efekti */
+            background-color: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(8px);
             z-index: 9999;
-            display: none; /* Başlangıçta gizli */
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -163,12 +163,11 @@
         const loader = document.getElementById('loadingOverlay');
 
         form.addEventListener('submit', function(event) {
-            // Eğer dosya seçilmediyse loader'ı açma (HTML5 validation çalışsın)
             if (form.checkValidity()) {
-                // Loader'ı göster
+
                 loader.style.display = 'flex';
 
-                // Butonu deaktif et (çift tıklamayı önlemek için)
+
                 const btn = form.querySelector('button');
                 btn.disabled = true;
                 btn.innerHTML = 'Processing...';

@@ -1,6 +1,6 @@
 import sys
 from src.exception.exception import CustomException
-from sklearn.metrics import r2_score
+from sklearn.metrics import f1_score
 from sklearn.model_selection import GridSearchCV
 
 def evaluate_models(X_train,y_train,X_test,y_test,models,params):
@@ -15,7 +15,7 @@ def evaluate_models(X_train,y_train,X_test,y_test,models,params):
             best_model = gs.best_estimator_
 
             y_test_pred = best_model.predict(X_test)
-            test_model_score = r2_score(y_test,y_test_pred)
+            test_model_score = f1_score(y_test,y_test_pred)
             report[model_name] = test_model_score
         return report
     except Exception as e:
