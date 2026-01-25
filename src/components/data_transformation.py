@@ -9,7 +9,7 @@ from src.constants.training_pipeline import TARGET_COLUMN,DATA_TRANSFORMATION_IM
 from src.entity.artifact_entity import DataValidationArtifact,DataTransformationArtifact
 from src.components.data_validation import DataValidation
 from src.entity.config_entity import DataTransformationConfig
-from src.utils.main_utils.utils import save_numpy_arr_data,save_pkl_obj
+from src.utils.main_utils.utils import save_numpy_arr_data,save_obj
 
 from src.exception.exception import CustomException
 from src.logging.logger import logging
@@ -63,9 +63,11 @@ class DataTransformation:
             save_numpy_arr_data(
                 self.data_transformation_config.transformed_test_file_path,arr=test_arr
             )
-            save_pkl_obj(
+            save_obj(
                 self.data_transformation_config.transformed_obj_file_path,obj=preprocessor
             )
+            save_obj("final_model/preprocessor.pkl",obj=preprocessor)
+
             data_transformation_artifact = DataTransformationArtifact(
                 transformed_obj_file_path=self.data_transformation_config.transformed_obj_file_path,
                 transformed_train_file_path=self.data_transformation_config.transformed_train_file_path,

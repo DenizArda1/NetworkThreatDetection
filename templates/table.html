@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Security | Prediction Results</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #38bdf8; /* Cyan Blue */
+            --text-color: #f1f5f9;
+            --border-color: #334155;
+            --phishing-color: #ef4444; /* Red */
+            --safe-color: #22c55e; /* Green */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar-brand {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: var(--accent-color) !important;
+            letter-spacing: -1px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem 0;
+        }
+
+        .result-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .table-container {
+            padding: 0;
+            margin: 0;
+            overflow-x: auto;
+        }
+
+        table.dataframe {
+            width: 100%;
+            margin-bottom: 0;
+            border-collapse: collapse;
+            color: var(--text-color);
+        }
+
+        table.dataframe th {
+            background-color: #0f172a;
+            color: var(--accent-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            padding: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        table.dataframe td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            font-size: 0.95rem;
+        }
+
+        table.dataframe tr:hover td {
+            background-color: rgba(56, 189, 248, 0.05);
+            transition: background-color 0.2s;
+        }
+
+        /* Status Badges */
+        .badge-safe {
+            background-color: rgba(34, 197, 94, 0.2);
+            color: var(--safe-color);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-phishing {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: var(--phishing-color);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <span style="color: #fff;">Network</span>Security<span style="color: var(--accent-color);">.AI</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container main-content">
+        <div class="row justify-content-center">
+            <div class="col-12">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold">Prediction Analysis</h2>
+                        <p class="text-secondary mb-0">AI Model Output & Risk Assessment</p>
+                    </div>
+                    <a href="/" class="btn btn-outline-light">
+                        Analyis New File
+                    </a>
+                </div>
+
+                <div class="result-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="card-title">Batch Results</span>
+                        <span class="badge bg-primary">Model V1.0</span>
+                    </div>
+
+                    <div class="table-container">
+                        {{ table | safe }}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const table = document.querySelector('table');
+            if(table) {
+                table.classList.add('table', 'table-borderless', 'mb-0');
+
+                const rows = table.querySelectorAll('tbody tr');
+
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    if(cells.length > 0) {
+                        const lastCell = cells[cells.length - 1];
+                        const text = lastCell.innerText.trim();
+
+
+                        const val = parseFloat(text);
+
+
+                        if (val === 0 || val === -1 || text.toLowerCase().includes("phishing")) {
+                            lastCell.innerHTML = `<span class="badge-phishing">⚠️ Phishing Detected</span>`;
+                        } else {
+
+                            lastCell.innerHTML = `<span class="badge-safe">🛡️ Safe Network</span>`;
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

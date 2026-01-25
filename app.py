@@ -1,0 +1,82 @@
+import sys
+import os
+import pandas as pd
+import certifi
+ca = certifi.where()
+
+from dotenv import load_dotenv
+load_dotenv()
+mongo_db_url = os.getenv("MONGO_DB_URL")
+
+import pymongo
+from src.exception.exception import CustomException
+from src.logging.logger import logging
+from src.pipeline.training_pipeline import TrainingPipeline
+from src.utils.main_utils.utils import load_obj
+from src.utils.ml_utils.model.estimator import NetworkModel
+
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, File, UploadFile, Request
+from uvicorn import run as app_run
+from fastapi.responses import Response
+
+from src.constants.training_pipeline import DATA_INGESTION_DATABASE_NAME
+from src.constants.training_pipeline import DATA_INGESTION_COLLECTION_NAME
+
+client = pymongo.MongoClient(mongo_db_url,tlsCAFile=ca)
+database = client[DATA_INGESTION_DATABASE_NAME]
+collection = client[DATA_INGESTION_COLLECTION_NAME]
+
+app = FastAPI()
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+from fastapi.templating import Jinja2Templates
+templates = Jinja2Templates(directory="./templates")
+
+@app.get("/", tags=["authentication"])
+async def index(request: Request):
+    return templates.TemplateResponse("index.html",{"request":request})
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+@app.get("/train")
+async def train():
+    try:
+        training_pipeline = TrainingPipeline()
+        training_pipeline.run_training_pipeline()
+        return Response("Training Completed")
+    except CustomException as e:
+        raise CustomException(e,sys)
+
+@app.post("/predict")
+async def predict(request: Request,file: UploadFile = File(...)):
+    try:
+        df = pd.read_csv(file.file)
+        if 'Result' in df.columns:
+            df = df.drop(columns=['Result'],axis=1)
+
+        preprocessor = load_obj("final_model/preprocessor.pkl")
+        model = load_obj("final_model/model.pkl")
+        network_model = NetworkModel(preprocessor, model)
+        y_pred = network_model.predict(df)
+        df['Predicted'] = y_pred
+        table_html = df.to_html(classes="table table-striped")
+        return templates.TemplateResponse("table.html",{"request":request,"table":table_html})
+    except CustomException as e:
+        raise CustomException(e,sys)
+    except Exception as e:
+        print(e)
+        return Response(f"Error: {e}")
+
+if __name__ == "__main__":
+    app_run(app,host="localhost",port=8000)

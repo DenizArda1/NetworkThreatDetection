@@ -1,0 +1,20 @@
+services:
+  network-security-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - .:/app
+
+    env_file:
+      - .env
+
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DEBUG=True
+
+    command: python -m uvicorn app:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app

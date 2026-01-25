@@ -8,5 +8,10 @@ scikit-learn
 scipy-stubs
 dill
 pyyaml
+mlflow
+dagshub
+fastapi
+uvicorn
+python-multipart
 
 #-e .
