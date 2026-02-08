@@ -25,11 +25,27 @@ from fastapi.responses import Response
 from src.constants.training_pipeline import DATA_INGESTION_DATABASE_NAME
 from src.constants.training_pipeline import DATA_INGESTION_COLLECTION_NAME
 
+from contextlib import asynccontextmanager
+
 client = pymongo.MongoClient(mongo_db_url,tlsCAFile=ca)
 database = client[DATA_INGESTION_DATABASE_NAME]
 collection = client[DATA_INGESTION_COLLECTION_NAME]
 
-app = FastAPI()
+ml_models = {}
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    try:
+        logging.info("Loading models into memory...")
+        ml_models['preprocessor'] = load_obj("final_model/preprocessor.pkl")
+        ml_models['model'] = load_obj("final_model/model.pkl")
+        logging.info("Models loaded successfully.")
+    except Exception as e:
+        print(f"Error: {e}")
+    yield
+    ml_models.clear()
+    logging.info("Models cleared from memory.")
+app = FastAPI(lifespan=lifespan)
 origins = ["*"]
 
 app.add_middleware(
@@ -42,6 +58,7 @@ app.add_middleware(
 
 from fastapi.templating import Jinja2Templates
 templates = Jinja2Templates(directory="./templates")
+
 
 @app.get("/", tags=["authentication"])
 async def index(request: Request):
@@ -75,13 +92,14 @@ async def get_task_status(task_id: str):
 @app.post("/predict")
 async def predict(request: Request,file: UploadFile = File(...)):
     try:
+        # Check if models are loaded
+        if "preprocessor" not in ml_models or "model" not in ml_models:
+            return Response("Error: Models are not loaded.", status_code=503)
         df = pd.read_csv(file.file)
         if 'Result' in df.columns:
             df = df.drop(columns=['Result'],axis=1)
 
-        preprocessor = load_obj("final_model/preprocessor.pkl")
-        model = load_obj("final_model/model.pkl")
-        network_model = NetworkModel(preprocessor, model)
+        network_model = NetworkModel(preprocessor=ml_models['preprocessor'],model=ml_models['model'])
         y_pred = network_model.predict(df)
         df['Predicted'] = y_pred
         table_html = df.to_html(classes="table table-striped")
